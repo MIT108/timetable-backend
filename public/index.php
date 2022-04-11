@@ -6,22 +6,22 @@ use Illuminate\Http\Request;
 define('LARAVEL_START', microtime(true));
 
 
-$allowedOrigins = array(
-    'http://127.0.0.1:8000',
-    'http://localhost:8080'
-);
-if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != ''){
-    foreach ($allowedOrigins as $allowedOrigin) {
-        if (preg_match('#'.$allowedOrigin.'#', $_SERVER['HTTP_ORIGIN'])) {
-            header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
-            header('Access-Control-Allow-Credentials: true');
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
-            header('Access-Control-Max-Age: 1728000');
-            header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, X-Requested-With, Content-Range, Content-Disposition, Content-Description, x-xsrf-token, ip, Accept, charset, boundary, Content-Length');
-            break;
-        }
-    }
-}
+// $allowedOrigins = array(
+//     '*'
+// );
+// if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != ''){
+//     foreach ($allowedOrigins as $allowedOrigin) {
+//         if (preg_match('#'.$allowedOrigin.'#', $_SERVER['HTTP_ORIGIN'])) {
+//             header('Access-Control-Allow-Origin: *');
+//             header('Access-Control-Allow-Credentials: true');
+//             header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+//             header('Access-Control-Max-Age: 1728000');
+//             header('Access-Control-Allow-Headers: Access-Control-Allow-Origin, Origin, Content-Type, X-Auth-Token, Authorization, X-Requested-With, Content-Range, content-type, authorization, Content-Disposition, Content-Description, x-xsrf-token, ip, Accept, charset, boundary, Content-Length');
+//             // header('Access-Control-Allow-Headers: *, content-type, authorization');
+//             break;
+//         }
+//     }
+// }
 
 
 
@@ -74,8 +74,5 @@ $response = $kernel->handle(
     $request = Request::capture()
 )->send();
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
-header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
 
 $kernel->terminate($request, $response);

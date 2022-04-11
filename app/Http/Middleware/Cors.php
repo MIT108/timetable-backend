@@ -17,15 +17,15 @@ class Cors
     public function handle(Request $request, Closure $next)
     {
 
-        $domain = ['http://localhost:8080'];
+        // $domain = ['http://localhost:8080'];
 
-        if (isset($request->server()['HTTP_ORIGIN'])) {
-            $origin = $request->server()['HTTP_ORIGIN'];
-            if (in_array($origin, $domain)) {
-                header('Access-Control-Allow-Origin: ' . $origin);
-                header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Auth-Token, Origin');
-            }
-        }
+        // if (isset($request->server()['HTTP_ORIGIN'])) {
+        //     $origin = $request->server()['HTTP_ORIGIN'];
+        //     if (in_array($origin, $domain)) {
+        //         header('Access-Control-Allow-Origin: ' . $origin);
+        //         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Auth-Token, Origin');
+        //     }
+        // }
 
 
         // $response = $next($request);
@@ -43,10 +43,18 @@ class Cors
         // if($request->getMethod()== "OPTIONS"){
         //     return response()->json("OK", 200, $headers);
         // }
-        $response = $next($request);
+        // $response = $next($request);
         // foreach($headers as $key => $value){
         //     $response->header($key, $value);
         // }
-        return $response;
+        // return $response;
+
+
+        return $next($request)
+            ->header('Access-Control-Allow-Origin', 'http://localhost:8080')
+            ->header('Access-Control-Allow-Credentials', 'true')
+            ->header('Access-Control-Allow-Methods', '*')
+            ->header('Access-Control-Request-Headers', '*')
+            ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization');
     }
 }
