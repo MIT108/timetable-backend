@@ -21,6 +21,9 @@ use PharIo\Manifest\Email;
 |
 */
 
+//test routes
+Route::get('/test', [AuthController::class, 'test'])->name('test');
+
 
 //user route
 Route::post('login', [AuthController::class, 'login'])->name('login.user');
