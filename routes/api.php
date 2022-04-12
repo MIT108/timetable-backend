@@ -4,11 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use PharIo\Manifest\Email;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,16 +31,25 @@ Route::post('email/verification-notification', [EmailVerificationController::cla
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-    Route::get('/products', function () {
-        return User::all();
+
+    //authentication routes
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout.user');
+    Route::post('changePassword', [AuthController::class, 'changePassword'])->name('changePassword.user');
+
+    //role routes
+    Route::group(['prefix' => 'role'], function(){
+        Route::post('create', [RoleController::class, 'create'])->name('create.role'); //create a new user role
+        Route::post('update', [RoleController::class, 'update'])->name('update.role'); //update a user role
+        Route::get('listAll', [RoleController::class, 'listAll'])->name('listAll.role'); //list all users roles
+        Route::get('delete/{id}', [RoleController::class, 'delete'])->name('delete.role'); //delete user role
     });
 
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout.user');
-
     //user routes
-    Route::get('listUsers', [UserController::class, 'listUsers'])->name('listUsers.user');
-
-
+    Route::group(['prefix' => 'user'], function () {
+        Route::post('create', [UserController::class, 'create'])->name('create.user'); //create a new user
+        Route::get('listUsers', [UserController::class, 'listUsers'])->name('listUsers.user');
+        Route::get('delete/{id}', [UserController::class, 'deleteUser'])->name('deleteUser.user'); //delete a user
+    });
     //timetable routes
     Route::group(['prefix' => 'timetable'], function(){
 

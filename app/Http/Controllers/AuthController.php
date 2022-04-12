@@ -16,7 +16,7 @@ class AuthController extends Controller
         ];
         return response($response, 200);
     }
-    
+
     public function register(Request $request){
          $fields= $request->validate([
             'name' => 'required|string',
@@ -81,5 +81,42 @@ class AuthController extends Controller
        ];
 
        return response($response, 201);
+   }
+
+   public function changePassword(Request $request){
+       $fields = $request->validate([
+           'user_id' => 'required',
+           'old_password' => 'required|string',
+           'new_password' => 'required|string'
+       ]);
+
+       $user = User::find($fields['user_id']);
+
+       $response = [];
+
+       if (Hash::check($fields['old_password'], $user->password)){
+           try {
+               $user->password = bcrypt($fields['new_password']);
+               $user->save();
+
+               $response = [
+                   'data' => $user,
+                   'message' => 'Password changed successfully'
+               ];
+           } catch (\Throwable $th) {
+               $response = [
+                   'error' => $th->getMessage,
+                   'message' => 'could not change password'
+               ];
+           }
+
+       }else{
+           $response = [
+               'error' => 'the old password is invalid',
+               'message' => 'the old password is invalid'
+           ];
+       }
+
+       return response($response, 200);
    }
 }
