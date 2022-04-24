@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('class_room_courses', function (Blueprint $table) {
             $table->id();
+            $table->integer('hoursDone');
+            $table->foreignId('class_room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

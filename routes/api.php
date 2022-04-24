@@ -1,12 +1,17 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClassRoomController;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\WeekController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,12 +49,58 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::get('delete/{id}', [RoleController::class, 'delete'])->name('delete.role'); //delete user role
     });
 
+    //Department Routes
+    Route::group(['prefix' => 'department'], function(){
+        Route::post('create', [DepartmentController::class, 'create'])->name('create.department'); //create a department
+        Route::post('update', [DepartmentController::class, 'update'])->name('update.department'); //update a department
+        Route::get('delete/{id}', [DepartmentController::class, 'delete'])->name('delete.department'); //delete department
+        Route::get('listDepartment', [DepartmentController::class, 'listDepartment'])->name('list.department'); //list all departments
+    });
+
+    //Course routes
+    Route::group(['prefix' => 'course'], function(){
+        Route::post('create', [CourseController::class, 'create'])->name('create.course'); //create a new course
+        Route::get('listCourses', [CourseController::class, 'listCourses'])->name('list.courses'); //list all courses
+        Route::get('listCourseInRoom/{id}', [CourseController::class, 'listCourseInRoom'])->name('list.courses.department'); //list course in a particular department
+        Route::post('update', [CourseController::class, 'update'])->name('update.course'); //update a course
+        Route::get('delete/{id}', [CourseController::class, 'delete'])->name('delete.course'); //delete a course
+    });
+
+    //Room routes
+    Route::group(['prefix' => 'room'], function(){
+        Route::post('create', [RoomController::class, 'create'])->name('create.room'); //create a new room
+        Route::get('listRooms', [RoomController::class, 'listRooms'])->name('list.room'); //list all rooms
+        Route::get('listRoomsInDepartment/{id}', [RoomController::class, 'listRoomsInDepartment'])->name('list.rooms.department'); //list rooms in a particular department
+        Route::post('update', [RoomController::class, 'update'])->name('update.room'); //update a room
+        Route::get('delete/{id}', [RoomController::class, 'delete'])->name('delete.room'); //delete a room
+    });
+
+    //classroom routes
+    Route::group(['prefix' => 'classroom'], function(){
+        Route::post('create', [ClassRoomController::class, 'create'])->name('create.classroom'); //create a new classroom
+        Route::get('listClassRooms', [ClassRoomController::class, 'listClassRooms'])->name('list.classrooms'); //list all classrooms
+        Route::get('listClassRoomsInRoom/{id}', [ClassRoomController::class, 'listClassRoomsInRoom'])->name('list.classrooms.department'); //list classroom in a particular department
+        Route::post('update', [ClassRoomController::class, 'update'])->name('update.classroom'); //update a classroom
+        Route::get('delete/{id}', [ClassRoomController::class, 'delete'])->name('delete.classroom'); //delete a classroom
+
+    });
+
     //user routes
     Route::group(['prefix' => 'user'], function () {
         Route::post('create', [UserController::class, 'create'])->name('create.user'); //create a new user
         Route::get('listUsers', [UserController::class, 'listUsers'])->name('listUsers.user');
         Route::get('delete/{id}', [UserController::class, 'deleteUser'])->name('deleteUser.user'); //delete a user
     });
+
+
+    //week Routes
+    Route::group(['prefix' => 'week'], function(){
+        Route::post('create', [WeekController::class, 'create'])->name('create.week'); //create a week
+        Route::post('update', [WeekController::class, 'update'])->name('update.week'); //update a week
+        Route::get('delete/{id}', [WeekController::class, 'delete'])->name('delete.week'); //delete week
+        Route::get('listWeeks', [WeekController::class, 'listWeeks'])->name('list.weeks'); //list all weeks
+    });
+
     //timetable routes
     Route::group(['prefix' => 'timetable'], function(){
 

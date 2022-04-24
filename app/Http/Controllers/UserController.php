@@ -16,6 +16,7 @@ class UserController extends Controller
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|string',
+            'role_id' => 'required|integer'
         ]);
 
         $password = Str::random(8);
