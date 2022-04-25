@@ -10,7 +10,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\OccasionController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\WeekController;
 
 /*
@@ -99,6 +101,17 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::post('update', [WeekController::class, 'update'])->name('update.week'); //update a week
         Route::get('delete/{id}', [WeekController::class, 'delete'])->name('delete.week'); //delete week
         Route::get('listWeeks', [WeekController::class, 'listWeeks'])->name('list.weeks'); //list all weeks
+        Route::get('listActiveWeek', [WeekController::class, 'listActiveWeek'])->name('list.active.week'); //list active week
+        Route::get('changeStatus/{id}', [WeekController::class, 'changeStatus'])->name('change.status.week'); //change status of a week
+    });
+
+    
+    //occasion Routes
+    Route::group(['prefix' => 'occasion'], function(){
+        Route::post('create', [OccasionController::class, 'create'])->name('create.occasion'); //create a occasion
+        Route::post('update', [OccasionController::class, 'update'])->name('update.occasion'); //update a occasion
+        Route::get('delete/{id}', [OccasionController::class, 'delete'])->name('delete.occasion'); //delete occasion
+        Route::get('listOccasions', [OccasionController::class, 'listOccasions'])->name('list.occasions'); //list all occasions
     });
 
     //timetable routes
@@ -122,5 +135,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::post('update', [PeriodController::class, 'updatePeriod'])->name('updatePeriod.timetable'); //update a period
             Route::get("delete/{id}", [PeriodController::class, 'deletePeriod'])->name('deletePeriod.timetable'); //delete a period
         });
+
+        Route::get('initialize', [TimetableController::class, 'initialize'])->name('initialize.timetable'); //initial timetable for active week
     });
 });

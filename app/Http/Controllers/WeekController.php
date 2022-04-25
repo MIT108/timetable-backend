@@ -60,6 +60,25 @@ class WeekController extends Controller
 
         return response($response, 200);
     }
+    public function listActiveWeek()
+    {
+
+        $response = [];
+        try {
+            $weeks = Week::where('status', 1)->get();
+            $response = [
+                'data' => $weeks,
+                'message' => 'week was successfully retrieved'
+            ];
+        } catch (\Throwable $th) {
+            $response = [
+                'error' => $th->getMessage(),
+                'message' => 'could not list the weeks'
+            ];
+        }
+
+        return response($response, 200);
+    }
 
     public function update(Request $request)
     {
@@ -145,6 +164,44 @@ class WeekController extends Controller
             $response = [
                 'error' => 'Week does not exist',
                 'message' => 'Week does not exist',
+            ];
+        }
+
+        return response($response, 200);
+    }
+
+
+    public function changeStatus(Request $request){
+        $id = $request->route('id');
+
+        $week = Week::find($id);
+        if ($week) {
+            if ($week->status == 0) {
+                if (Week::where('status', 1)->count() == 0) {
+                    $week->status = 1;
+                    $response = [
+                        'data' => $week,
+                        'message' => "status updated successfully"
+                    ];
+                }else{
+                    $response = [
+                        "error" => "you can only have one active week",
+                        "message" => "you can only have one active week"
+                    ];
+                }
+            }else {
+                $week->status = 0;
+                $response = [
+                    'data' => $week,
+                    'message' => "status updated successfully"
+                ];
+            }
+            $week->save();
+
+        }else{
+            $response = [
+                "error" => "no such week found",
+                "message" => "no such week found"
             ];
         }
 
