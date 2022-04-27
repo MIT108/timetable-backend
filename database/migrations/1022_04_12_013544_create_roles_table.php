@@ -25,7 +25,8 @@ return new class extends Migration
 
         Role::create([
             'name' => 'admin',
-            'description' => 'admin role'
+            'description' => 'admin role',
+            'order' => 1
         ]);
     }
 

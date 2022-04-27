@@ -44,31 +44,18 @@ class RoleController extends Controller
     public function update(Request $request){
         $fields = $request->validate([
             'role_id' => 'required',
-            'name' => '',
-            'description' => ''
+            'name' => 'required',
+            'description' => 'required',
+            'order' => 'required'
         ]);
-        if ($fields['role_id'] != 1) {$role = Role::find($fields['role_id']);
+        if ($fields['role_id'] != 1) {
+            $role = Role::find($fields['role_id']);
             $response = [];
             if ($role) {
-                if ($role->name == $fields['name']) {
-                    try {
-                        $role->description = $fields["description"];
-                        $role->save();
-
-                        $response = [
-                            'data' => $role,
-                            'message' => 'role update was successful'
-                        ];
-                    } catch (\Throwable $th) {
-                        $response = [
-                            'error' => $th->getMessage(),
-                            'message' => 'could not update role'
-                        ];
-                    }
-                }else{
-                    if ($this->checkRoleName($fields['name'])) {
+                if($this->checkOrder($fields['order'])){
+                    if ($role->name == $fields['name']) {
                         try {
-                            $role->name = $fields["name"];
+                            $role->order = $fields["order"];
                             $role->description = $fields["description"];
                             $role->save();
 
@@ -76,20 +63,46 @@ class RoleController extends Controller
                                 'data' => $role,
                                 'message' => 'role update was successful'
                             ];
-
                         } catch (\Throwable $th) {
                             $response = [
                                 'error' => $th->getMessage(),
                                 'message' => 'could not update role'
                             ];
                         }
+                    }else{
+                        if ($this->checkRoleName($fields['name'])) {
+                            try {
+                                $role->order = $fields["order"];
+                                $role->name = $fields["name"];
+                                $role->description = $fields["description"];
+                                $role->save();
 
-                    }else {
-                        $response = [
-                            'error' => 'this role name has already been assigned',
-                            'message' => 'this role name has already been assigned'
-                        ];
+                                $response = [
+                                    'data' => $role,
+                                    'message' => 'role update was successful'
+                                ];
+
+                            } catch (\Throwable $th) {
+                                $response = [
+                                    'error' => $th->getMessage(),
+                                    'message' => 'could not update role'
+                                ];
+                            }
+
+                        }else {
+                            $response = [
+                                'error' => 'this role name has already been assigned',
+                                'message' => 'this role name has already been assigned'
+                            ];
+                        }
                     }
+
+                }else{
+                    $response = [
+                        'error' => 'this role priority has already been used',
+                        'message' => 'this role priority has already been used'
+                    ];
+
                 }
             }else {
                 $response = [
@@ -154,6 +167,14 @@ class RoleController extends Controller
             return false;
         }else {
             return true;
+        }
+    }
+
+    public function checkOrder($order){
+        if (Role::where('order', $order)->count() == 0) {
+            return true;
+        }else {
+            return false;
         }
     }
 }

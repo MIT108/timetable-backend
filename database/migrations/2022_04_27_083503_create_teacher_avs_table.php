@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('timetables', function (Blueprint $table) {
+        Schema::create('teacher_avs', function (Blueprint $table) {
             $table->id();
-            $table->string('identifier');
-            $table->foreignId('week_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('period_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('occasion_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('week_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->integer('status')->default(0);
             $table->timestamps();
         });
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('timetables');
+        Schema::dropIfExists('teacher_avs');
     }
 };

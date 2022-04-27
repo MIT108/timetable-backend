@@ -105,13 +105,15 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::get('changeStatus/{id}', [WeekController::class, 'changeStatus'])->name('change.status.week'); //change status of a week
     });
 
-    
+
     //occasion Routes
     Route::group(['prefix' => 'occasion'], function(){
         Route::post('create', [OccasionController::class, 'create'])->name('create.occasion'); //create a occasion
         Route::post('update', [OccasionController::class, 'update'])->name('update.occasion'); //update a occasion
         Route::get('delete/{id}', [OccasionController::class, 'delete'])->name('delete.occasion'); //delete occasion
         Route::get('listOccasions', [OccasionController::class, 'listOccasions'])->name('list.occasions'); //list all occasions
+        Route::post('occasionToTimetable', [OccasionController::class, 'occasionToTimetable'])->name('occasion.to.timetable'); //add an occasion to the timeline
+        Route::post('removeOccasionToTimetable', [OccasionController::class, 'removeOccasionToTimetable'])->name('remove.occasion.to.timetable'); //remove an occasion to the timeline
     });
 
     //timetable routes
@@ -137,5 +139,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         });
 
         Route::get('initialize', [TimetableController::class, 'initialize'])->name('initialize.timetable'); //initial timetable for active week
+        Route::get('listTimeTable', [TimetableController::class, 'listTimeTable'])->name('list.timetable'); //list the time table of the active week
+
+        //teachers availability routes
+        Route::group(['prefix' => 'teacherAvailability'], function(){
+            
+        });
     });
 });

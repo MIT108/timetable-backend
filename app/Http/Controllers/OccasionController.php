@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Occasion;
+use App\Models\Period;
+use App\Models\Timetable;
+use App\Models\Week;
 use Illuminate\Http\Request;
 
 class OccasionController extends Controller
@@ -158,5 +161,105 @@ class OccasionController extends Controller
         } else {
             return true;
         }
+    }
+
+    public function occasionToTimetable(Request $request)
+    {
+        $fields = $request->validate([
+            'occasion_id' => 'required',
+            'period_id' => 'required'
+        ]);
+
+        $activeWeek = Week::where('status', 1);
+        $occasion = Occasion::find($fields['occasion_id']);
+        $response = [];
+
+        if ($activeWeek->count() > 0) {
+            if (Period::find($fields['period_id'])) {
+                if ($occasion) {
+
+                    try {
+                        $timetable = Timetable::where('week_id', $activeWeek->get()[0]->id)
+                            ->where('period_id', $fields['period_id'])
+                            ->update([
+                                'occasion_id' => $occasion->id
+                            ]);
+                        $response = [
+                            'data' => $timetable,
+                            'message' => 'Timetable updated successfully'
+                        ];
+                    } catch (\Throwable $th) {
+                        $response = [
+                            'error' => $th->getMessage(),
+                            'message' => 'could not update timetable'
+                        ];
+                    }
+                } else {
+                    $response = [
+                        'error' => 'Occasion does not exist',
+                        'message' => 'Occasion does not exist'
+                    ];
+                }
+            } else {
+                $response = [
+                    'error' => 'Period does not exist',
+                    'message' => 'Period does not exist'
+                ];
+            }
+        } else {
+            $response = [
+                'error' => 'No active week found',
+                'message' => 'No active week found'
+            ];
+        }
+
+        return response($response, 200);
+    }
+
+    public function removeOccasionToTimetable(Request $request)
+    {
+
+        $fields = $request->validate([
+            'period_id' => 'required'
+        ]);
+
+        $activeWeek = Week::where('status', 1);
+        $response = [];
+
+        if ($activeWeek->count() > 0) {
+            if (Period::find($fields['period_id'])) {
+                try {
+                    Timetable::where('week_id', $activeWeek->get()[0]->id)
+                        ->where('period_id', $fields['period_id'])
+                        ->update([
+                            'occasion_id' => Null
+                        ]);
+                    $timetable = Timetable::where('week_id', $activeWeek->get()[0]->id)
+                    ->where('period_id', $fields['period_id'])
+                    ->get();
+                    $response = [
+                        'data' => $timetable,
+                        'message' => 'Timetable updated successfully'
+                    ];
+                } catch (\Throwable $th) {
+                    $response = [
+                        'error' => $th->getMessage(),
+                        'message' => 'could not update timetable'
+                    ];
+                }
+            } else {
+                $response = [
+                    'error' => 'Period does not exist',
+                    'message' => 'Period does not exist'
+                ];
+            }
+        } else {
+            $response = [
+                'error' => 'No active week found',
+                'message' => 'No active week found'
+            ];
+        }
+
+        return response($response, 200);
     }
 }

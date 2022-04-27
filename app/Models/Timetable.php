@@ -10,7 +10,7 @@ class Timetable extends Model
     use HasFactory;
     protected $fillable=[
         'identifier',
-        'week_id', 
+        'week_id',
         'period_id',
         'course_id',
         'occasion_id',
