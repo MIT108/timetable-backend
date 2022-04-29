@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\OccasionController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\TeacherAvController;
 use App\Http\Controllers\TimetableController;
 use App\Http\Controllers\WeekController;
 
@@ -143,7 +144,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
         //teachers availability routes
         Route::group(['prefix' => 'teacherAvailability'], function(){
-            
+            Route::post('create', [TeacherAvController::class, 'create'])->name('create.teacherAvailability'); //create a teacherAvailability
         });
     });
 });

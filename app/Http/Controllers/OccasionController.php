@@ -179,11 +179,14 @@ class OccasionController extends Controller
                 if ($occasion) {
 
                     try {
-                        $timetable = Timetable::where('week_id', $activeWeek->get()[0]->id)
+                        Timetable::where('week_id', $activeWeek->get()[0]->id)
                             ->where('period_id', $fields['period_id'])
                             ->update([
                                 'occasion_id' => $occasion->id
                             ]);
+                        $timetable = Timetable::where('week_id', $activeWeek->get()[0]->id)
+                        ->where('period_id', $fields['period_id'])
+                        ->get();
                         $response = [
                             'data' => $timetable,
                             'message' => 'Timetable updated successfully'

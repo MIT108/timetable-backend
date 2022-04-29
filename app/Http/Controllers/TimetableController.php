@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassRoom;
 use App\Models\Period;
 use App\Models\Timetable;
 use App\Models\Week;
@@ -23,49 +24,60 @@ class TimetableController extends Controller
 
         $periods = Period::get();
         $week = Week::where('status', 1);
+        $classrooms = ClassRoom::get();
 
         $response = [];
 
-        if (count($periods) > 0) {
-            if ($week->count() > 0) {
+        if ($classrooms->count() > 0) {
+            if (count($periods) > 0) {
+                if ($week->count() > 0) {
 
-                if (Timetable::where('week_id', $week->get()[0]->id)->count() == 0) {
+                    if (Timetable::where('week_id', $week->get()[0]->id)->count() == 0) {
 
-                    foreach ($periods as $period) {
-                        $fields = [
-                            'identifier' => $identifier,
-                            'week_id' => $week->get()[0]->id,
-                            'period_id' => $period->id
+                        foreach ($classrooms as $classroom) {
+                            foreach ($periods as $period) {
+                                $fields = [
+                                    'class_room_id' => $classroom->id,
+                                    'identifier' => $identifier,
+                                    'week_id' => $week->get()[0]->id,
+                                    'period_id' => $period->id
+                                ];
+
+                                Timetable::create($fields);
+                            }
+                        }
+
+                        $timetable = Timetable::where('identifier', $identifier)->get();
+                        $response = [
+                            'data' => $timetable,
+                            'message' => 'timetable initialized successfully'
+                        ];
+                    }else{
+                        $response = [
+                            'error' => 'the active week has already been initialized',
+                            'message' => 'the active week has already been initialized',
                         ];
 
-                        Timetable::create($fields);
                     }
 
-                    $timetable = Timetable::where('identifier', $identifier)->get();
-                    $response = [
-                        'data' => $timetable,
-                        'message' => 'timetable initialized successfully'
-                    ];
+
                 }else{
                     $response = [
-                        'error' => 'the active week has already been initialized',
-                        'message' => 'the active week has already been initialized',
+                        'error' => 'no active weeks found',
+                        'message' => 'no active weeks found',
                     ];
-
                 }
-
 
             }else{
                 $response = [
-                    'error' => 'no active weeks found',
-                    'message' => 'no active weeks found',
+                    'error' => 'no period found',
+                    'message' => 'no period found',
                 ];
             }
-
         }else{
             $response = [
-                'error' => 'no period found',
-                'message' => 'no period found',
+                'error' => 'no class found',
+                'message' => 'no class found',
             ];
         }
 

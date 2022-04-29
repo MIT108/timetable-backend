@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('timetables', function (Blueprint $table) {
             $table->id();
             $table->string('identifier');
+            $table->foreignId('class_room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('week_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('period_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');

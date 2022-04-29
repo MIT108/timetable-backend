@@ -70,25 +70,27 @@ class AuthController extends Controller
        if(!$user || !Hash::check($fields['password'], $user->password)){
            return response([
                'message' =>'Bad credentials'
-           ], 422);
+           ], 200);
        }
 
        $token = $user->createToken('authenticationToken')->plainTextToken;
 
        $response = [
-           'user' => $user,
+           'data' => $user,
            'token' => $token
        ];
 
-       return response($response, 201);
+       return response($response, 200);
    }
 
    public function changePassword(Request $request){
        $fields = $request->validate([
-           'user_id' => 'required',
            'old_password' => 'required|string',
            'new_password' => 'required|string'
        ]);
+
+       $user_id =  auth()->user()["id"];
+       $fields += ['user_id' => $user_id];
 
        $user = User::find($fields['user_id']);
 
