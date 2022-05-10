@@ -33,8 +33,9 @@ class AuthController extends Controller
         $token = $user->createToken('authenticationToken')->plainTextToken;
 
         $response = [
-            'user' => $user,
-            'token' => $token
+            'data' => $user,
+            'token' => $token,
+            'message' => 'registration successful'
         ];
 
         return response($response, 200);
@@ -69,7 +70,8 @@ class AuthController extends Controller
        //check password
        if(!$user || !Hash::check($fields['password'], $user->password)){
            return response([
-               'message' =>'Bad credentials'
+                'message' =>'Bad credentials',
+                'error' =>'Bad credentials'
            ], 200);
        }
 
@@ -77,7 +79,8 @@ class AuthController extends Controller
 
        $response = [
            'data' => $user,
-           'token' => $token
+           'token' => $token,
+           'message' => 'login successful'
        ];
 
        return response($response, 200);
